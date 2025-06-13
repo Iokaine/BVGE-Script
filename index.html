@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Call Center Skript - Strom & Gas Verkauf</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+        
+        .left-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+        }
+        
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .stage-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stage-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+        
+        .stage-btn.active {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .stage-btn:not(.active) {
+            background: #ecf0f1;
+            color: #34495e;
+        }
+        
+        .stage-btn:not(.active):hover {
+            background: #bdc3c7;
+            transform: translateY(-1px);
+        }
+        
+        .script-content {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .script-title {
+            color: #e74c3c;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            border-bottom: 3px solid #e74c3c;
+            padding-bottom: 10px;
+        }
+        
+        .script-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            white-space: pre-line;
+        }
+        
+        .tips {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        
+        .tips h4 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .tips ul {
+            list-style: none;
+        }
+        
+        .tips li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .tips li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+        
+        .savings-result {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .checklist-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .checklist-item input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        .objection-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .objection-btn {
+            padding: 10px 15px;
+            border: 2px solid #e74c3c;
+            background: white;
+            color: #e74c3c;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .objection-btn:hover, .objection-btn.active {
+            background: #e74c3c;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .objection-response {
+            background: #fff5f5;
+            border: 2px solid #e74c3c;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .objection-response h4 {
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stage-buttons {
+                flex-direction: column;
+            }
+            
+            .stage-btn {
+                text-align: center;
+            }
+        }
+        
+        .icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Call Center Skript</h1>
+            <p>Strom & Gas Verkauf - Professionelle Kundenberatung</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="stage-buttons">
+                    <button class="stage-btn active" onclick="showStage('greeting')">Begrüßung</button>
+                    <button class="stage-btn" onclick="showStage('qualification')">Bedarfsermittlung</button>
+                    <button class="stage-btn" onclick="showStage('presentation')">Angebotspräsentation</button>
+                    <button class="stage-btn" onclick="showStage('objections')">Einwandbehandlung</button>
+                    <button class="stage-btn" onclick="showStage('closing')">Abschluss</button>
+                </div>
+                
+                <div class="script-content">
+                    <h2 class="script-title" id="stage-title">Begrüßung</h2>
+                    <div class="script-text" id="stage-script">
+Guten Tag! Mein Name ist [IHR NAME], ich rufe von BVGE an. 
+
+Wir helfen Familien und Unternehmen dabei, bei ihren Strom- und Gaskosten zu sparen. 
+
+Haben Sie 2-3 Minuten Zeit, damit ich Ihnen erklären kann, wie Sie bis zu 15% Ihrer Energiekosten sparen können?
+                    </div>
+                    <div class="tips" id="stage-tips">
+                        <h4>Wichtige Tipps:</h4>
+                        <ul>
+                            <li>Selbstbewusst und freundlich sprechen</li>
+                            <li>Auf Zustimmung zum Gespräch warten</li>
+                            <li>Bei Ablehnung höflich verabschieden</li>
+                            <li>Sich mit vollem Namen vorstellen</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Einwandbehandlung -->
+                <div class="card" style="margin-top: 20px;">
+                    <h3>
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                        Einwandbehandlung
+                    </h3>
+                    <div class="objection-buttons">
+                        <button class="objection-btn" onclick="showObjection('expensive')">Zu teuer</button>
+                        <button class="objection-btn" onclick="showObjection('think')">Muss überlegen</button>
+                        <button class="objection-btn" onclick="showObjection('satisfied')">Bin zufrieden</button>
+                        <button class="objection-btn" onclick="showObjection('distrust')">Vertraue nicht</button>
+                        <button class="objection-btn" onclick="showObjection('time')">Keine Zeit</button>
+                        <button class="objection-btn" onclick="showObjection('contract')">Vertrag läuft</button>
+                    </div>
+                    <div id="objection-response"></div>
+                </div>
+            </div>
+            
+            <div class="right-panel">
+                <!-- Kundendaten -->
+                <div class="card">
+                    <h3>
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                        Kundendaten
+                    </h3>
+                    <div class="form-group">
+                        <label>Kundenname:</label>
+                        <input type="text" id="customer-name" placeholder="Name des Kunden">
+                    </div>
+                    <div class="form-group">
+                        <label>Stromrechnung (€/Monat):</label>
+                        <input type="number" id="electricity-bill" placeholder="z.B. 85">
+                    </div>
+                    <div class="form-group">
+                        <label>Gasrechnung (€/Monat):</label>
+                        <input type="number" id="gas-bill" placeholder="z.B. 65">
+                    </div>
+                    <div class="form-group">
+                        <label>Aktueller Anbieter:</label>
+                        <input type="text" id="current-provider" placeholder="z.B. Stadtwerke">
+                    </div>
+                </div>
+                
+                <!-- Ersparnis-Rechner -->
+                <div class="card">
+                    <h3>
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                        </svg>
+                        Ersparnis-Rechner
+                    </h3>
+                    <button class="btn" onclick="calculateSavings()">Ersparnis berechnen</button>
+                    <div id="savings-result"></div>
+                </div>
+                
+                <!-- Checkliste -->
+                <div class="card">
+                    <h3>
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                        </svg>
+                        Gesprächs-Checkliste
+                    </h3>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-name">
+                        <label for="check-name">Kundenname erhalten</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-bills">
+                        <label for="check-bills">Aktuelle Rechnungen erfragt</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-provider">
+                        <label for="check-provider">Aktueller Anbieter ermittelt</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-address">
+                        <label for="check-address">Adresse notiert</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-contact">
+                        <label for="check-contact">Kontaktdaten vollständig</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-agreement">
+                        <label for="check-agreement">Vertragsbereitschaft geprüft</label>
+                    </div>
+                </div>
+                
+                <!-- Statistik -->
+                <div class="card">
+                    <h3>
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                        </svg>
+                        Tagesstatistik
+                    </h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
+                        <div>
+                            <div style="font-size: 2em; font-weight: bold; color: #3498db;" id="calls-count">0</div>
+                            <div style="color: #7f8c8d;">Anrufe</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2em; font-weight: bold; color: #27ae60;" id="success-count">0</div>
+                            <div style="color: #7f8c8d;">Erfolge</div>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="addCall()" style="margin-top: 15px;">Anruf hinzufügen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const stages = {
+            greeting: {
+                title: 'Begrüßung',
+                script: `Guten Tag! Mein Name ist [IHR NAME], ich rufe von BVGE an. 
+
+Wir helfen Familien und Unternehmen dabei, bei ihren Strom- und Gaskosten zu sparen. 
+
+Haben Sie 2-3 Minuten Zeit, damit ich Ihnen erklären kann, wie Sie bis zu 15% Ihrer Energiekosten sparen können?`,
+                tips: [
+                    'Selbstbewusst und freundlich sprechen',
+                    'Auf Zustimmung zum Gespräch warten',
+                    'Bei Ablehnung höflich verabschieden',
+                    'Sich mit vollem Namen vorstellen'
+                ]
+            },
+            qualification: {
+                title: 'Bedarfsermittlung',
+                script: `Ausgezeichnet! Lassen Sie mich etwas über Ihre aktuellen Energiekosten erfahren:
+
+1. Sind Sie zufrieden mit der Höhe Ihrer Strom- und Gasrechnungen?
+
+2. Wie viel zahlen Sie ungefähr monatlich für Strom? Und für Gas?
+
+3. Wer ist Ihr aktueller Energieversorger?
+
+4. Wie hoch ist ungefähr Ihr monatlicher Verbrauch in kWh und m³?`,
+                tips: [
+                    'Aktiv zuhören und Antworten notieren',
+                    'Mitgefühl für hohe Kosten zeigen',
+                    'Unklare Punkte nachfragen',
+                    'NICHT zu schnell mit Angebot kommen'
+                ]
+            },
+            presentation: {
+                title: 'Angebotspräsentation',
+                script: `Ich verstehe Ihre Situation mit den hohen Energiekosten.
+
+Unser Unternehmen arbeitet direkt mit großen Energieversorgern zusammen und kann Ihnen Tarife anbieten, die 10-15% günstiger sind.
+
+Bei Ihren Kosten von [BETRAG] Euro pro Monat können Sie etwa [ERSPARNIS] Euro monatlich sparen!
+
+Das sind [JAHRESERSPARNIS] Euro im Jahr - eine beachtliche Summe, nicht wahr?`,
+                tips: [
+                    'KONKRETE Zahlen des Kunden verwenden',
+                    'Den Nutzen hervorheben',
+                    'Unbedingt Jahresersparnis nennen',
+                    'Zeit zum Nachdenken geben'
+                ]
+            },
+            objections: {
+                title: 'Einwandbehandlung',
+                script: `Ich verstehe Ihre Bedenken - das ist eine normale Reaktion auf ein neues Angebot.
+
+Lassen Sie mich Ihre Fragen beantworten und Ihre Zweifel ausräumen...`,
+                tips: [
+                    'NICHT mit dem Kunden streiten',
+                    'Einwände ruhig annehmen',
+                    'Nachfragen stellen',
+                    'Konkrete Antworten mit Beispielen geben',
+                    'Soziale Beweise verwenden'
+                ]
+            }, 
+            closing: {
+                title: 'Abschluss',
+                script: `Hervorragend! Ich sehe, dass Sie das Angebot interessante finden.
+
+Für die Vertragsstellung benötige ich nur wenige Minuten. Ich kann die Unterlagen sofort vorbereiten.
+
+Bereits im nächsten Monat erhalten Sie Ihre erste Rechnung mit der Ersparnis!
+
+Wann passt es Ihnen am besten für die Vertragsunterzeichnung - heute Abend oder morgen?`,
+                tips: [
+                    'Dringlichkeitsgefühl erzeugen',
+                    'Alternativen anbieten (entweder-oder)',
+                    'Bereit für Vertragsabschluss sein',
+                    'Keine Bedenkzeit geben',
+                    'Kontaktdaten sichern'
+                ]
+            }
+        };
+
+        const objections = {
+            expensive: {
+                title: 'Zu teuer',
+                response: 'Ich verstehe Ihre Sorge. Tatsächlich entstehen keine zusätzlichen Kosten. Wir werden einfach Ihr neuer Versorger zu günstigeren Tarifen. Alle Zahlungen bleiben gleich, nur die Beträge werden niedriger.'
+            },
+            think: {
+                title: 'Muss überlegen',
+                response: 'Natürlich ist das eine wichtige Entscheidung. Aber bedenken Sie: Jeder Monat des Zögerns bedeutet verlorene Ersparnis. Kann ich Ihnen meine Kontaktdaten für Rückfragen hinterlassen?'
+            },
+            satisfied: {
+                title: 'Bin zufrieden',
+                response: 'Das ist großartig! Das bedeutet, Sie sind mit der Qualität zufrieden. Was wäre, wenn ich Ihnen sage, dass Sie dieselbe Qualität 10-15% günstiger bekommen können?'
+            },
+            distrust: {
+                title: 'Vertraue nicht',
+                response: 'Ich verstehe, es gibt viele unseriöse Anbieter. Wir arbeiten vollkommen legal, alle Dokumente und Lizenzen vorhanden. Ich kann Ihnen Kopien sofort per WhatsApp senden.'
+            },
+            time: {
+                title: 'Keine Zeit',
+                response: 'Ich verstehe, dass die Zeit knapp ist. Genau deshalb schlage ich vor, das Thema jetzt in 5 Minuten zu klären, damit Sie sich später nicht mehr damit beschäftigen müssen.'
+            },
+            contract: {
+                title: 'Vertrag läuft',
+                response: 'Kein Problem! Wir können den Wechsel so planen, dass er nahtlos nach Ende Ihres aktuellen Vertrags erfolgt. So verpassen Sie keine Ersparnis und haben keine Unterbrechung.'
+            }
+        };
+
+        let callCount = 0;
+        let successCount = 0;
+
+        function showStage(stage) {
+            // Update active button
+            document.querySelectorAll('.stage-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update content
+            const stageData = stages[stage];
+            document.getElementById('stage-title').textContent = stageData.title;
+            document.getElementById('stage-script').textContent = stageData.script;
+            
+            // Update tips
+            const tipsHtml = stageData.tips.map(tip => `<li>${tip}</li>`).join('');
+            document.getElementById('stage-tips').innerHTML = `<h4>Wichtige Tipps:</h4><ul>${tipsHtml}</ul>`;
+        }
+
+        function showObjection(objectionKey) {
+            // Update active button
+            document.querySelectorAll('.objection-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Show response
+            const objection = objections[objectionKey];
+            document.getElementById('objection-response').innerHTML = `
+                <div class="objection-response">
+                    <h4>Antwort auf "${objection.title}":</h4>
+                    <p>${objection.response}</p>
+                </div>
+            `;
+        }
+
+        function calculateSavings() {
+            const electricityBill = parseFloat(document.getElementById('electricity-bill').value) || 0;
+            const gasBill = parseFloat(document.getElementById('gas-bill').value) || 0;
+            
+            const totalCurrent = electricityBill + gasBill;
+            const monthlySavings = Math.round(totalCurrent * 0.12); // 12% Rabatt
+            const yearlySavings = monthlySavings * 12;
+            
+            if (totalCurrent > 0) {
+                document.getElementById('savings-result').innerHTML = `
+                    <div class="savings-result">
+                        <div style="font-size: 1.2em; margin-bottom: 10px;">💰 Ihre Ersparnis:</div>
+                        <div style="font-size: 1.5em; font-weight: bold;">
+                            ${monthlySavings}€ pro Monat<br>
+                            ${yearlySavings}€ pro Jahr
+                        </div>
+                    </div>
+                `;
+            } else {
+                alert('Bitte geben Sie gültige Beträge ein.');
+            }
+        }
+
+        function addCall() {
+            callCount++;
+            document.getElementById('calls-count').textContent = callCount;
+            
+            // Ask if successful
+            if (confirm('War dieser Anruf erfolgreich?')) {
+                successCount++;
+                document.getElementById('success-count').textContent = successCount;
+            }
+        }
+
+        // Initialize with greeting stage
+        showStage('greeting');
+    </script>
+</body>
+</html>
