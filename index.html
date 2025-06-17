@@ -13,7 +13,7 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #053d1d 0%, #053d1d 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -28,8 +28,8 @@
         }
         
         .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            color: white;
+            background: linear-gradient(135deg, #216733 0%, #216733 100%);
+            color: #FFD700;
             padding: 30px;
             text-align: center;
         }
@@ -102,14 +102,14 @@
             background: white;
             border-radius: 10px;
             padding: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         
         .script-title {
-            color: #e74c3c;
+            color: #216733;
             font-size: 1.8em;
             margin-bottom: 15px;
-            border-bottom: 3px solid #e74c3c;
+            border-bottom: 3px solid #216733;
             padding-bottom: 10px;
         }
         
@@ -296,14 +296,26 @@
             height: 20px;
             fill: currentColor;
         }
+        .no-select {
+            user-select: none;
+        }   
+
+        img {
+             -webkit-user-drag: none;
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>BVGE Skript</h1>
+            
+            <img src="Images/Logo.jpg" alt="BVGE Logo" class="no-select" draggable="false" alt="Картинка"> 
+            <h1> <b> BVGE Consulting Gmbh </b> </h1>
             <p>Strom & Gas Verkauf - Professionelle Kundenberatung</p>
         </div>
+
+        
         
         <div class="main-content">
             <div class="left-panel">
