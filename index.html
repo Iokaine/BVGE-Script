@@ -304,6 +304,20 @@
         img {
              -webkit-user-drag: none;
         }
+        
+        .author-initials {
+            position: fixed;
+            bottom: 10px;
+            right: 15px;
+            font-size: 14px;
+            color: #999;
+            opacity: 0.6;
+            font-family: Arial, sans-serif;
+            pointer-events: none; /* нельзя случайно нажать */
+            z-index: 999;
+        }
+
+
 
     </style>
 </head>
@@ -644,5 +658,7 @@ Wann passt es Ihnen am besten für die Vertragsunterzeichnung - heute Abend oder
         // Initialize with greeting stage
         showStage('greeting');
     </script>
+    <div class="author-initials">Created by Vladimir</div>
+
 </body>
 </html>
