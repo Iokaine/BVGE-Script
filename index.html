@@ -328,6 +328,129 @@
         .section.active {
             display: block;
         }
+        /* --- Календарь --- */
+        .calendar-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            text-align: center;
+            font-size: 1.1em;
+            background: #f8f9fa;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(33,103,51,0.07);
+            margin-bottom: 0;
+            position: relative;
+            z-index: 1;
+            border: 3px solid #27ae60; /* Зеленая обводка */
+        }
+        .calendar-table th {
+            background: linear-gradient(90deg, #216733 0%, #27ae60 100%);
+            color: #fff;
+            font-weight: 700;
+            padding: 10px 0;
+            border: none;
+            font-size: 1.08em;
+            letter-spacing: 1px;
+        }
+        .calendar-table td {
+            padding: 10px 0 6px 0;
+            min-width: 48px;
+            min-height: 48px;
+            border-radius: 12px;
+            background: #fff;
+            transition: background 0.18s, box-shadow 0.18s, color 0.18s;
+            cursor: pointer;
+            position: relative;
+            border: none;
+            outline: none;
+        }
+        .calendar-table td.today {
+            border: 2.5px solid #27ae60;
+            background: #eafaf1 !important;
+            color: #216733;
+            font-weight: bold;
+            box-shadow: 0 0 0 2px #27ae6033;
+        }
+        .calendar-table td[data-has-calls="1"] {
+            font-weight: 600;
+        }
+        .calendar-table td:hover:not(:empty) {
+            background: #d6f5e3 !important;
+            box-shadow: 0 0 0 2px #27ae6055;
+            color: #216733;
+            z-index: 2;
+        }
+        .calendar-table td[data-bg="red"] { background: #ffeaea !important; }
+        .calendar-table td[data-bg="yellow"] { background: #fffbe5 !important; }
+        .calendar-table td[data-bg="green"] { background: #eafaf1 !important; }
+        .calendar-table td:empty { background: #f8f8f8 !important; cursor: default; }
+        .calendar-table .cal-day-num {
+            font-size: 1.1em;
+            margin-bottom: 2px;
+            display: block;
+        }
+        .calendar-table .cal-calls {
+            font-size: 0.93em;
+            color: #888;
+            margin-top: 2px;
+            display: block;
+        }
+        .calendar-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #216733 0%, #27ae60 100%);
+            color: #fff;
+            border-radius: 12px;
+            padding: 10px 18px;
+            box-shadow: 0 2px 8px #21673311;
+        }
+        .calendar-header-bar button {
+            font-size: 1.5em;
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 0 8px;
+        }
+        .calendar-header-bar button:hover {
+            color: #FFD700;
+        }
+        .calendar-header-bar span {
+            font-size: 1.22em;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        #calendar-stats {
+            background: linear-gradient(90deg, #eafaf1 0%, #fffbe5 100%);
+            border-radius: 12px;
+            padding: 18px 24px;
+            box-shadow: 0 2px 12px #27ae6011;
+            font-size: 1.08em;
+            margin-top: 18px;
+            color: #216733;
+        }
+        .calendar-table td.selected,
+        .calendar-table td:active {
+            background: #c6f0d6 !important;
+            box-shadow: 0 0 0 3px #27ae60cc;
+            color: #216733;
+            outline: none;
+            z-index: 10;
+            position: relative;
+        }
+        .calendar-table td.today.selected,
+        .calendar-table td.selected.today {
+            border: 2.5px solid #27ae60;
+            box-shadow: 0 0 0 3px #27ae60cc;
+            background: #c6f0d6 !important;
+            color: #216733;
+            z-index: 11;
+            position: relative;
+        }
     </style>
 </head>
 <body>
@@ -339,6 +462,7 @@
         <button class="nav-tab" onclick="showSection('clients-section', this)">Kunden</button>
         <button class="nav-tab" onclick="showSection('tools-section', this)">Tools</button>
         <button class="nav-tab" onclick="showSection('stats-section', this)">Statistik</button>
+        <button class="nav-tab" onclick="showSection('calendar-section', this)">Kalender</button>
     </div>
     <div class="container">
         <div class="header">
@@ -504,37 +628,36 @@ Haben Sie 2-3 Minuten Zeit, damit ich Ihnen erklären kann, wie Sie bis zu 15% I
                         <h3>
                             <svg class="icon" viewBox="0 0 24 24">
                                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                            </svg>
-                            Kundendaten
-                        </h3>
-                        <div class="form-group">
-                            <label>Kundenname:</label>
-                            <input type="text" id="kunden-customer-name" placeholder="Name des Kunden">
-                        </div>
-                        <div class="form-group">
-                            <label>Adresse:</label>
-                            <input type="text" id="kunden-customer-address" placeholder="Adresse">
-                        </div>
-                        <div class="form-group">
-                            <label>Email:</label>
-                            <input type="email" id="kunden-customer-email" placeholder="Email">
-                        </div>
-                        <div class="form-group">
-                            <label>Stromrechnung (€/Monat):</label>
-                            <input type="number" id="kunden-electricity-bill" placeholder="z.B. 85">
-                        </div>
-                        <div class="form-group">
-                            <label>Gasrechnung (€/Monat):</label>
-                            <input type="number" id="kunden-gas-bill" placeholder="z.B. 65">
-                        </div>
-                        <div class="form-group">
-                            <label>Aktueller Anbieter:</label>
-                            <input type="text" id="kunden-current-provider" placeholder="z.B. Stadtwerke">
-                        </div>
-                        <div class="client-btns">
-                            <button class="btn" onclick="updateSelectedClient()">Änderungen speichern</button>
-                            <button class="btn" style="background:#e74c3c; background:linear-gradient(135deg,#e74c3c,#c0392b);" onclick="deleteClient()">Löschen</button>
-                        </div>
+                        </svg>
+                        Kundendaten
+                    </div>
+                    <div class="form-group">
+                        <label>Kundenname:</label>
+                        <input type="text" id="kunden-customer-name" placeholder="Name des Kunden">
+                    </div>
+                    <div class="form-group">
+                        <label>Adresse:</label>
+                        <input type="text" id="kunden-customer-address" placeholder="Adresse">
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="kunden-customer-email" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label>Stromrechnung (€/Monat):</label>
+                        <input type="number" id="kunden-electricity-bill" placeholder="z.B. 85">
+                    </div>
+                    <div class="form-group">
+                        <label>Gasrechnung (€/Monat):</label>
+                        <input type="number" id="kunden-gas-bill" placeholder="z.B. 65">
+                    </div>
+                    <div class="form-group">
+                        <label>Aktueller Anbieter:</label>
+                        <input type="text" id="kunden-current-provider" placeholder="z.B. Stadtwerke">
+                    </div>
+                    <div class="client-btns">
+                        <button class="btn" onclick="updateSelectedClient()">Änderungen speichern</button>
+                        <button class="btn" style="background:#e74c3c; background:linear-gradient(135deg,#e74c3c,#c0392b);" onclick="deleteClient()">Löschen</button>
                     </div>
                 </div>
             </div>
@@ -598,6 +721,7 @@ Haben Sie 2-3 Minuten Zeit, damit ich Ihnen erklären kann, wie Sie bis zu 15% I
                                 </select>
                             </div>
                             <button class="btn" style="margin-top:5px;width:100%;font-size:1.1em;" onclick="addCall()">Anruf hinzufügen</button>
+                            <button class="btn" id="undo-call-btn" style="margin-top:8px;width:100%;font-size:1.1em;background:linear-gradient(135deg,#e74c3c,#c0392b);" onclick="undoLastCall()" disabled>Letzte Aktion rückgängig</button>
                         </div>
                         <div style="flex:1;min-width:400px;max-width:600px;">
                             <canvas id="callsChart" width="540" height="300" style="background:#fff;border-radius:18px;box-shadow:0 2px 16px #eee;display:block;margin:0 auto;"></canvas>
@@ -613,6 +737,18 @@ Haben Sie 2-3 Minuten Zeit, damit ich Ihnen erklären kann, wie Sie bis zu 15% I
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <!-- Новый раздел для календаря -->
+        <div class="section calendar-section">
+            <div class="header">
+                <h1>Kalender & Anruf-Statistik</h1>
+            </div>
+            <div class="main-content" style="flex-direction:column;gap:30px;max-width:1100px;margin:0 auto;">
+                <div class="card" style="padding: 30px;">
+                    <div id="calendar-container"></div>
+                    <div id="calendar-stats" style="margin-top:24px;"></div>
                 </div>
             </div>
         </div>
@@ -954,6 +1090,11 @@ Wann passt es Ihnen am besten für die Vertragsunterzeichnung - heute Abend oder
             document.getElementById('calls-count').textContent = callCount;
             document.getElementById('success-count').textContent = successCount;
             updateSuccessRate();
+            // Показываем дату последнего звонка, если есть соответствующий элемент
+            if (document.getElementById('last-call-date')) {
+                document.getElementById('last-call-date').textContent = getLastCallDate(filtered);
+            }
+            updateUndoButton();
         }
 
         function applyStatsFilter() {
@@ -972,6 +1113,22 @@ Wann passt es Ihnen am besten für die Vertragsunterzeichnung - heute Abend oder
             saveStats();
             recalcStats();
             drawCallsChart();
+            updateUndoButton();
+        }
+
+        function undoLastCall() {
+            if (callsHistory.length === 0) return;
+            if (!confirm('Letzte Aktion wirklich rückgängig machen?')) return;
+            callsHistory.pop();
+            saveStats();
+            recalcStats();
+            drawCallsChart();
+            updateUndoButton();
+        }
+
+        function updateUndoButton() {
+            const btn = document.getElementById('undo-call-btn');
+            btn.disabled = callsHistory.length === 0;
         }
 
         function updateSuccessRate() {
@@ -1121,6 +1278,9 @@ Wann passt es Ihnen am besten für die Vertragsunterzeichnung - heute Abend oder
                 recalcStats();
                 drawCallsChart();
             }
+            if (sectionClass === 'calendar-section') {
+                renderCalendar();
+            }
         }
 
         // --- Initialisierung ---
@@ -1128,6 +1288,129 @@ Wann passt es Ihnen am besten für die Vertragsunterzeichnung - heute Abend oder
         recalcStats();
         renderClients();
         showStage('greeting', {target: document.querySelector('.stage-btn.active')});
+        updateUndoButton();
+
+        // --- Календарь ---
+        function renderCalendar(selectedDate) {
+            const container = document.getElementById('calendar-container');
+            if (!container) return;
+
+            const now = selectedDate ? new Date(selectedDate) : new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+
+            // Первый день месяца
+            const firstDay = new Date(year, month, 1);
+            let startDay = firstDay.getDay();
+            if (startDay === 0) startDay = 7; // Понедельник - первый день недели
+
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Для выделения выбранного дня
+            let selectedDayStr = window._calendarSelectedDay || (selectedDate ? selectedDate : (new Date()).toISOString().slice(0,10));
+
+            let html = `<div class="calendar-header-bar">
+                <button onclick="changeCalendarMonth(-1)" title="Vorheriger Monat">&#8592;</button>
+                <span>${now.toLocaleString('de-DE', { month: 'long', year: 'numeric' })}</span>
+                <button onclick="changeCalendarMonth(1)" title="Nächster Monat">&#8594;</button>
+            </div>`;
+            html += `<table class="calendar-table">
+                <thead>
+                    <tr>
+                        <th>Mo</th><th>Di</th><th>Mi</th><th>Do</th><th>Fr</th><th>Sa</th><th>So</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+
+            let day = 1;
+            for (let row = 0; row < 6; row++) {
+                html += '<tr>';
+                for (let col = 1; col <= 7; col++) {
+                    if ((row === 0 && col < startDay) || day > daysInMonth) {
+                        html += '<td></td>';
+                    } else {
+                        let isToday = (day === (new Date()).getDate() && month === (new Date()).getMonth() && year === (new Date()).getFullYear());
+                        let dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                        let calls = callsHistory.filter(e => (new Date(e.date)).toISOString().slice(0,10) === dateStr);
+                        let total = calls.length;
+                        let success = calls.filter(e => e.success).length;
+                        let percent = total ? Math.round(success/total*100) : 0;
+                        let bg = "";
+                        if (total > 0) {
+                            if (percent < 33) bg = "red";
+                            else if (percent < 50) bg = "yellow";
+                            else bg = "green";
+                        }
+                        let selectedClass = (dateStr === selectedDayStr) ? 'selected' : '';
+                        html += `<td 
+                            class="${isToday ? 'today' : ''} ${selectedClass}" 
+                            data-bg="${bg}" 
+                            data-has-calls="${total > 0 ? 1 : 0}"
+                            data-date="${dateStr}"
+                            onclick="calendarDayClick(this, '${dateStr}')"
+                            tabindex="0"
+                        >
+                            <span class="cal-day-num">${day}</span>
+                            <span class="cal-calls">${total > 0 ? `📞${total} <span style='color:#27ae60;'>✔${success}</span>` : ''}</span>
+                        </td>`;
+                        day++;
+                    }
+                }
+                html += '</tr>';
+                if (day > daysInMonth) break;
+            }
+            html += '</tbody></table>';
+            container.innerHTML = html;
+
+            // Показать статистику за выбранный день (по умолчанию сегодня)
+            showCalendarStats(selectedDayStr);
+            container.dataset.year = year;
+            container.dataset.month = month;
+        }
+
+        // Обработчик клика по дню календаря
+        function calendarDayClick(td, dateStr) {
+            // Убрать выделение со всех
+            document.querySelectorAll('.calendar-table td.selected').forEach(el => el.classList.remove('selected'));
+            td.classList.add('selected');
+            window._calendarSelectedDay = dateStr;
+            showCalendarStats(dateStr);
+        }
+
+        function changeCalendarMonth(delta) {
+            const container = document.getElementById('calendar-container');
+            let year = parseInt(container.dataset.year, 10);
+            let month = parseInt(container.dataset.month, 10);
+            month += delta;
+            if (month < 0) { month = 11; year--; }
+            if (month > 11) { month = 0; year++; }
+            renderCalendar(`${year}-${String(month+1).padStart(2,'0')}-01`);
+        }
+
+        function showCalendarStats(dateStr) {
+            const statsDiv = document.getElementById('calendar-stats');
+            const calls = callsHistory.filter(e => (new Date(e.date)).toISOString().slice(0,10) === dateStr);
+            const total = calls.length;
+            const success = calls.filter(e => e.success).length;
+            let percent = total ? Math.round(success/total*100) : 0;
+            let color = percent < 33 ? '#e74c3c' : (percent < 50 ? '#f39c12' : '#27ae60');
+            let dateObj = new Date(dateStr);
+            statsDiv.innerHTML = `
+                <div style="font-size:1.2em;font-weight:600;margin-bottom:8px;">
+                    Statistik für <span style="color:#3498db">${dateObj.toLocaleDateString('de-DE')}</span>
+                </div>
+                <div style="font-size:1.1em;margin-bottom:6px;">
+                    <b>Gesamtanrufe:</b> <span style="color:#3498db;font-weight:bold;">${total}</span>
+                </div>
+                <div style="font-size:1.1em;margin-bottom:6px;">
+                    <b>Erfolgreiche Abschlüsse:</b> <span style="color:#27ae60;font-weight:bold;">${success}</span>
+                </div>
+                <div style="font-size:1.1em;margin-bottom:6px;">
+                    <b>Erfolgsquote:</b> <span style="font-weight:bold;padding:2px 10px;border-radius:8px;background:#eee;color:${color};">${percent}%</span>
+                </div>
+            `;
+        }
     </script>
     <div class="author-initials">Created by Vladimir</div>
 </body>
