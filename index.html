@@ -538,11 +538,11 @@ Haben Sie 2-3 Minuten Zeit, damit ich Ihnen erklären kann, wie Sie bis zu 15% I
                     </div>
                     <div class="form-group">
                         <label>Stromrechnung (€/Monat):</label>
-                        <input type="number" id="electricity-bill" placeholder="z.B. 85">
+                        <input type="number" id="electricity-bill" placeholder="z.B. 85" oninput="calculateSavings()">
                     </div>
                     <div class="form-group">
                         <label>Gasrechnung (€/Monat):</label>
-                        <input type="number" id="gas-bill" placeholder="z.B. 65">
+                        <input type="number" id="gas-bill" placeholder="z.B. 65" oninput="calculateSavings()">
                     </div>
                     <div class="form-group">
                         <label>Aktueller Anbieter:</label>
@@ -585,6 +585,8 @@ Haben Sie 2-3 Minuten Zeit, damit ich Ihnen erklären kann, wie Sie bis zu 15% I
                         <label for="check-agreement">Vertragsbereitschaft geprüft</label>
                     </div>
                 </div>
+                <!-- Добавьте этот блок после формы в левом блоке, если его нет -->
+                <div id="savings-result" class="savings-result" style="display:none;"></div>
             </div>
         </div>
         <div class="section clients-section">
@@ -676,13 +678,13 @@ Haben Sie 2-3 Minuten Zeit, damit ich Ihnen erklären kann, wie Sie bis zu 15% I
                     </h3>
                     <div class="form-group">
                         <label>Stromrechnung (€/Monat):</label>
-                        <input type="number" id="electricity-bill-tool" placeholder="z.B. 85">
+                        <input type="number" id="electricity-bill-tool" placeholder="z.B. 85" oninput="calculateSavings()">
                     </div>
                     <div class="form-group">
                         <label>Gasrechnung (€/Monat):</label>
-                        <input type="number" id="gas-bill-tool" placeholder="z.B. 65">
+                        <input type="number" id="gas-bill-tool" placeholder="z.B. 65" oninput="calculateSavings()">
                     </div>
-                    <button class="btn" onclick="calculateSavings()">Ersparnis berechnen</button>
+                    
                     <div id="savings-result-tool" class="savings-result" style="display:none;"></div>
                 </div>
             </div>
@@ -1027,24 +1029,50 @@ Wann passt es Ihnen am besten für die Vertragsunterzeichnung - heute Abend oder
 
         // --- Ersparnis-Rechner ---
         function calculateSavings() {
+            // Для основной формы (links)
+            const savingsResult = document.getElementById('savings-result');
             const electricityBill = parseFloat(document.getElementById('electricity-bill').value) || 0;
             const gasBill = parseFloat(document.getElementById('gas-bill').value) || 0;
             const totalCurrent = electricityBill + gasBill;
             const monthlySavings = Math.round(totalCurrent * 0.12);
             const yearlySavings = monthlySavings * 12;
-            if (totalCurrent > 0) {
-                document.getElementById('savings-result').innerHTML = `
-                    <div class="savings-result">
+            if (savingsResult) {
+                if (totalCurrent > 0) {
+                    savingsResult.innerHTML = `
                         <div style="font-size: 1.2em; margin-bottom: 10px;">💰 Ihre Ersparnis:</div>
                         <div style="font-size: 1.5em; font-weight: bold;">
                             ${monthlySavings}€ pro Monat<br>
                             ${yearlySavings}€ pro Jahr
                         </div>
-                    </div>
-                `;
-            } else {
-                document.getElementById('savings-result').innerHTML = '';
-                alert('Bitte geben Sie gültige Beträge ein.');
+                    `;
+                    savingsResult.style.display = '';
+                } else {
+                    savingsResult.innerHTML = '';
+                    savingsResult.style.display = 'none';
+                }
+            }
+
+            // Для Tools (правый блок)
+            const resultDiv = document.getElementById('savings-result-tool');
+            const electricityBillTool = parseFloat(document.getElementById('electricity-bill-tool').value) || 0;
+            const gasBillTool = parseFloat(document.getElementById('gas-bill-tool').value) || 0;
+            const totalTool = electricityBillTool + gasBillTool;
+            const monthlySavingsTool = Math.round(totalTool * 0.12);
+            const yearlySavingsTool = monthlySavingsTool * 12;
+            if (resultDiv) {
+                if (totalTool > 0) {
+                    resultDiv.innerHTML = `
+                        <div style="font-size: 1.2em; margin-bottom: 10px;">💰 Ihre Ersparnis:</div>
+                        <div style="font-size: 1.5em; font-weight: bold;">
+                            ${monthlySavingsTool}€ pro Monat<br>
+                            ${yearlySavingsTool}€ pro Jahr
+                        </div>
+                    `;
+                    resultDiv.style.display = '';
+                } else {
+                    resultDiv.innerHTML = '';
+                    resultDiv.style.display = 'none';
+                }
             }
         }
 
